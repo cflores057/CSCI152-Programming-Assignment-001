@@ -1,63 +1,76 @@
-/*const http = require('http'); 
-const data = require('./source')
-http.createServer((req, res) => {
-res.writeHead(200, {'Content-Type': 'application\json'})
-res.write(JSON.stringify(data));
-res.end();
-}).listen(4000);*/
+const express = require('express');
+const app = express();
+//had as const instead of let, prevented the delete function from working 
+let users = require('./data');
 
-const express = require('express'); 
-const app = express(); 
-const PORT = 4000; 
-const bodyParser = require('body-parser');
-const cors = require('cors'); 
-
-app.use(bodyParser.json());
 app.use(express.json());
-app.use(cors());
 
-const userData = require('./useraccount')
+//just to test out postman, making sure the connection was correct
+app.get('/', (req, res) => {
+    res.send('Hello World');
+});
 
+//get function to display all users from the data.js file
 app.get('/users', (req, res) => {
-    res.send(userData);
+    res.send(users);
+    console.log('Users displayed, 1 - 30');
 });
 
-app.get('/user/:id', (req, res) => {
+//post function to create new user, set with an id that generates right after the current length of the current array of users
+app.post('/users', (req, res) => {
+    const user = {
+        id: JSON.stringify(users.length + 1)
+    };
+    users.push(user);
+    res.send(user);
+    console.log(user);
+});
+
+//put function inputs the information into the new generated user id
+app.put('/users/:id', (req, res) => {
+    const id = req.params.id;
+    const uIndex = users.findIndex((user) => user.id === id);
+  
+    if (uIndex === -1) {
+      res.status(404).send('User not found');
+      console.log('User not found under id" ' + id);
+      return;
+    }
+  
+    const updateU = { ...users[uIndex], ...req.body };
+    users[uIndex] = updateU;
+  
+    res.send(updateU);
+    console.log('User with id: ' + id  + ' updated!');
+  });
+
+//get function that displays a user based on the id that is added to the url
+app.get('/users/:id', (req, res) => {
     const id = req.params.id; 
-    const user = user.find((u) => u.id === id);
 
-    if(user){
-        res.json(user);
+    for(let user of users){
+        if(user.id === id){
+            res.json(user); 
+            console.log(user);
+            console.log('Displaying user id: ' + id);
+            return;
+        }
     }
-    else{
-        res.status(404).json({message: 'User not found.'});
-    }
+    res.status(404).send('User not found');
+    console.log('User under id: ' + id + ' not found.')
 });
 
-app.post('/post', (req, res) => {
-    
-});
+//delete function that deletes a user, based on the id that is input into the url
+app.delete('/users/:id', (req, res) => {
+    const id = req.params.id; 
+    users = users.filter((user) => {
+        if(user.id !== id){
+            return true;
+        }
+        return false;
+    }); 
+    res.send("User is deleted!");
+    console.log("Deleted user id: " + id + "!")
+}); 
 
-app.delete('/delete/:id', (req, res) => {
-
-});
-
-/*app.get('/user/:id', (req, res) => {
-    res.send(userData);
-})*/
-
-/*app.post('/user/add', (req, res) => {
-    const { name } = req.body 
-
-    const newUser = {
-        id: userData.length + 1, 
-        name 
-    }
-
-    userData.push(newUser) 
-    return res.json(userData);
-})*/
-
-app.listen(PORT, ()=> {
-    console.log(`App is listening on poert ${PORT}`);
-})
+app.listen(4000, () => console.log('Listening on port 4000!'));

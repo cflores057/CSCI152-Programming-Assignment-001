@@ -1,26 +1,15 @@
 {
-  "name": "csci152-programming-assignment-001",
+  "name": "assignment01",
   "version": "1.0.0",
-  "description": "RESTful Web Service to provide  CRUD operations with the sample user data in JSON format.",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "nodemon index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cflores057/CSCI152-Programming-Assignment-001.git"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/cflores057/CSCI152-Programming-Assignment-001/issues"
-  },
-  "homepage": "https://github.com/cflores057/CSCI152-Programming-Assignment-001#readme",
   "dependencies": {
-    "body-parser": "^1.20.2",
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "nodemon": "^2.0.21"
+    "express": "^4.18.2"
   }
 }
